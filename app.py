@@ -19,7 +19,7 @@ from sqlalchemy.exc import IntegrityError
 st.set_page_config(page_title="WMS + Procurement", layout="wide")
 
 # ✅ Main page title (top of main page)
-st.title("Warehouse Management + Procurement System")
+st.title("Warehouse Management & Procurement System")
 st.caption("WMS • Procurement • Inventory • Deliveries • Analytics")
 st.divider()
 
