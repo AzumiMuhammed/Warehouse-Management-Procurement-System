@@ -60,13 +60,14 @@ else:
 
 # ---------------------------
 # DEMO LOGIN (free access)
-# Only auto-created in SQLite (demo mode).
+# One click only.
 
 # ---------------------------
 DEMO_EMAIL = "just_for@demo.com"
 DEMO_PASSWORD = "demo1111!"
 DEMO_NAME = "Just for Demo"
-DEMO_ROLE = "Demo" 
+DEMO_ROLE = "admin" 
+
 
 # ---------------------------
 # TABLES
@@ -364,13 +365,15 @@ def log(actor, action, entity_type, entity_id, details=None):
             entity_id=entity_id, details=payload
         ))
 
-# ✅ Create demo user automatically in SQLite demo mode (only if no users exist)
+# ✅ demo user in SQLite demo mode (only if no users exist)
 def ensure_demo_user_exists():
     if USING_MYSQL:
         return
     with engine.begin() as conn:
-        count_users = conn.execute(select(func.count()).select_from(users)).scalar() or 0
-        if count_users == 0:
+        demo = conn.execute(
+            select(users).where(users.c.email == DEMO_EMAIL)
+        ).mappings().first()
+        if not demo:
             conn.execute(users.insert().values(
                 name=DEMO_NAME,
                 email=DEMO_EMAIL,
@@ -378,6 +381,7 @@ def ensure_demo_user_exists():
                 role=DEMO_ROLE,
                 dept="Demo",
             ))
+
 
 ensure_demo_user_exists()
 
@@ -406,7 +410,8 @@ def send_email(to_email: str, subject: str, body: str):
 
 def require_role(roles: list[str]) -> bool:
     u = st.session_state.get("user")
-    return bool(u and (u["role"] in roles or u["role"] == "Demo"))
+    return bool(u and (u["role"] in roles or u["role"] == "admin"))
+
 
 # Inventory utilities
 def get_or_create_inv(conn, warehouse_id: int, item_id: int, bin_id: int|None = None):
@@ -461,6 +466,8 @@ def transfer_stock(conn, wh_from: int, wh_to: int, item_id: int, qty: float, rea
 if "user" not in st.session_state:
     st.session_state.user = None
 
+# one click assess.
+
 with st.sidebar:
     st.subheader("Account")
 
@@ -469,17 +476,24 @@ with st.sidebar:
         if st.button("Sign out"):
             st.session_state.user = None
             st.rerun()
+
     else:
-        # ✅ Recruiter demo login: still requires login action in sidebar (button)
+        # ✅ One-click recruiter access (SQLite demo mode)
         if not USING_MYSQL:
-            st.caption("Demo access (for recruiters)")
-            if st.button("Login as Demo User"):
+            st.caption("Recruiter access")
+            if st.button("Demo login", use_container_width=True):
                 with engine.begin() as conn:
-                    u = conn.execute(select(users).where(users.c.email == DEMO_EMAIL)).mappings().first()
+                    u = conn.execute(
+                        select(users).where(users.c.email == DEMO_EMAIL)
+                    ).mappings().first()
                 if u:
-                    st.session_state.user = {"id": u["id"], "name": u["name"], "role": u["role"], "email": u["email"]}
+                    st.session_state.user = {
+                        "id": u["id"],
+                        "name": u["name"],
+                        "role": u["role"],
+                        "email": u["email"],
+                    }
                     st.rerun()
-            st.caption(f"Demo credentials: {DEMO_EMAIL} / {DEMO_PASSWORD}")
             st.divider()
 
         with st.expander("Sign in", expanded=True):
@@ -489,12 +503,16 @@ with st.sidebar:
                 with engine.begin() as conn:
                     u = conn.execute(select(users).where(users.c.email == email)).mappings().first()
                 if u and u["password_hash"] == sha256(pwd):
-                    st.session_state.user = {"id": u["id"], "name": u["name"], "role": u["role"], "email": u["email"]}
+                    st.session_state.user = {
+                        "id": u["id"],
+                        "name": u["name"],
+                        "role": u["role"],
+                        "email": u["email"],
+                    }
                     st.rerun()
                 else:
                     st.error("Invalid credentials")
 
-# ✅ Removed: "Create first admin (if none)"
 
 if not st.session_state.user:
     st.info("Please sign in to continue.")
