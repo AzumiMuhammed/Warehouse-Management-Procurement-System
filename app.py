@@ -29,7 +29,7 @@ DB_HOST = st.secrets.get("DB_HOST", os.getenv("DB_HOST", "")).strip()
 USING_MYSQL = bool(DB_HOST)
 
 if USING_MYSQL:
-    DB_PORT = int(st.secrets.get("DB_PORT", os.getenv("DB_PORT", "3306")))
+    DB_PORT = int(st.secrets.get("DB_PORT", os.getenv("DB_PORT", " ")))
     DB_USER = st.secrets.get("DB_USER", os.getenv("DB_USER", "")).strip()
     DB_PASS = st.secrets.get("DB_PASS", os.getenv("DB_PASS", "")).strip()
     DB_SCHEMA = st.secrets.get("DB_SCHEMA", os.getenv("DB_SCHEMA", "procurement_db")).strip()
@@ -63,10 +63,10 @@ else:
 # One click only.
 
 # ---------------------------
-DEMO_EMAIL = "just_for@demo.com"
-DEMO_PASSWORD = "demo1111!"
-DEMO_NAME = "Admin just for Demo purposes"
-DEMO_ROLE = "admin" 
+DEMO_EMAIL = " "
+DEMO_PASSWORD = " "
+DEMO_NAME = " "
+DEMO_ROLE = " " 
 
 
 # ---------------------------
