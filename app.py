@@ -63,10 +63,10 @@ else:
 # One click only.
 
 # ---------------------------
-DEMO_EMAIL = " "
-DEMO_PASSWORD = " "
-DEMO_NAME = " "
-DEMO_ROLE = " " 
+DEMO_EMAIL = "just_for@demo.com"
+DEMO_PASSWORD = "demo1111!"
+DEMO_NAME = "Admin just for Demo purposes"
+DEMO_ROLE = "admin"
 
 
 # ---------------------------
