@@ -29,7 +29,7 @@ DB_HOST = st.secrets.get("DB_HOST", os.getenv("DB_HOST", "")).strip()
 USING_MYSQL = bool(DB_HOST)
 
 if USING_MYSQL:
-    DB_PORT = int(st.secrets.get("DB_PORT", os.getenv("DB_PORT", " ")))
+    DB_PORT = int(st.secrets.get("DB_PORT", os.getenv("DB_PORT", "3306")))
     DB_USER = st.secrets.get("DB_USER", os.getenv("DB_USER", "")).strip()
     DB_PASS = st.secrets.get("DB_PASS", os.getenv("DB_PASS", "")).strip()
     DB_SCHEMA = st.secrets.get("DB_SCHEMA", os.getenv("DB_SCHEMA", "procurement_db")).strip()
