@@ -19,7 +19,7 @@ from sqlalchemy.exc import IntegrityError
 st.set_page_config(page_title="WMS + Procurement", layout="wide")
 
 # ✅ Main page title (top of main page)
-st.title("Warehouse Management & Procurement System")
+st.title("Warehouse Management + Procurement System")
 st.caption("WMS • Procurement • Inventory • Deliveries • Analytics")
 st.divider()
 
@@ -66,7 +66,7 @@ else:
 DEMO_EMAIL = "just_for@demo.com"
 DEMO_PASSWORD = "demo1111!"
 DEMO_NAME = "Admin just for Demo purposes"
-DEMO_ROLE = "admin"
+DEMO_ROLE = "admin" 
 
 
 # ---------------------------
@@ -702,6 +702,7 @@ def page_grn_insp():
                     grn_id=int(grn_id_in), result=result, notes=notes, inspected_by=st.session_state.user["id"]
                 ))
             st.success("Inspection saved")
+    
 
     with engine.begin() as conn:
         df = pd.read_sql_query(sqltext("SELECT id, grn_no, po_id, received_at FROM goods_receipts ORDER BY id DESC LIMIT 200"), conn)
@@ -1175,3 +1176,10 @@ elif choice.startswith("13)"):
     page_reports()
 elif choice.startswith("Admin"):
     page_admin_users()
+
+st.caption("""
+✔️ Uses SQLite automatically when DB_HOST is not configured (Streamlit Cloud demo mode).
+✔️ Demo user is available via sidebar login (recruiters can assess the app).
+✔️ Auto-updates inventory on GRN; deducts on shipments.
+✔️ Includes inventory valuation report.
+""")
